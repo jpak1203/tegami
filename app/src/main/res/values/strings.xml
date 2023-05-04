@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Tegami</string>
+    <string name="debug_utils_status_code_formatted">Status Code: %1$s</string>
+
     <string name="sign_up">Sign up</string>
     <string name="log_in">Log in</string>
     <string name="password">Password</string>
@@ -9,4 +11,12 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="password_error">Must contain 8 characters with at least 1 uppercase and 1 lowercase letter and either 1 number or 1 special character</string>
     <string name="email_error">Enter a valid email</string>
+    <string name="empty_credentials_error">Please enter an email and/or password</string>
+    <string name="wrong_credentials_error">Wrong email and/or password</string>
+    <string name="user_auth_error">Error creating account..</string>
+    <string name="welcome_message_1">Make new friends from all over the world</string>
+    <string name="welcome_message_2">Send letters to anyone</string>
+    <string name="start_message">To start, enter your email:</string>
+
+
 </resources>
