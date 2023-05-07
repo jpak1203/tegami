@@ -1,4 +1,4 @@
-package com.jpakku.tegami.user
+package com.jpakku.tegami.ui.user
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

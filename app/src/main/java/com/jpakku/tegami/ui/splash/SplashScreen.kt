@@ -1,9 +1,8 @@
-package com.jpakku.tegami.splash
+package com.jpakku.tegami.ui.splash
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -13,16 +12,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.jpakku.tegami.R
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController) {
 
+    val viewModel = hiltViewModel<SplashScreenViewModel>()
     val scale = remember {
         Animatable(0f)
     }
@@ -37,16 +38,25 @@ fun SplashScreen(navController: NavController) {
             )
         )
         delay(2000L)
-        navController.navigate("user-auth")
+        val user = viewModel.getUser()
+        if (user != null) {
+            navController.navigate("home/${user.uid}/false") {
+                popUpTo(navController.graph.id) {
+                    inclusive = true
+                }
+            }
+        } else {
+            navController.navigate("user-auth")
+        }
     }
 
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier.scale(scale.value),
-            painter = painterResource(id = R.drawable.tegami_foreground),
+            model = R.drawable.tegami_foreground,
             contentDescription = "Logo"
         )
     }

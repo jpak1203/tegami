@@ -1,4 +1,4 @@
-package com.jpakku.tegami.user
+package com.jpakku.tegami.ui.user
 
 import android.content.Context
 import android.view.KeyEvent.ACTION_DOWN
@@ -306,7 +306,11 @@ private fun userAuth(
             .addOnCompleteListener { auth ->
                 if (auth.isSuccessful) {
                     viewModel.setUserAuthError(false)
-                    navController.navigate("home/${auth.result.user!!.uid}/$isNewUser")
+                    navController.navigate("home/${auth.result.user!!.uid}/$isNewUser") {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
                 } else {
                     viewModel.setUserAuthErrorMessage(context.getString(R.string.wrong_credentials_error))
                     viewModel.setUserAuthError(true)

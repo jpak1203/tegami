@@ -11,9 +11,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.jpakku.tegami.splash.SplashScreen
+import com.jpakku.tegami.ui.home.HomeScreen
+import com.jpakku.tegami.ui.splash.SplashScreen
 import com.jpakku.tegami.ui.theme.TegamiTheme
-import com.jpakku.tegami.user.UserAuthScreen
+import com.jpakku.tegami.ui.user.UserAuthScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,6 +48,7 @@ class MainActivity : ComponentActivity() {
                             val newUser = backStackEntry.arguments?.getBoolean("newUser")
 
                             //TODO: HomeScreen(userId, newUser)
+                            HomeScreen(userId, newUser)
                         }
                     }
                 }
