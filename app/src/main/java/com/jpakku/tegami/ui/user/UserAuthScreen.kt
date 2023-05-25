@@ -15,10 +15,23 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -39,7 +52,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jpakku.tegami.R
 import com.jpakku.tegami.ui.theme.Typography
@@ -48,8 +60,7 @@ import timber.log.Timber
 
 
 @Composable
-fun UserAuthScreen(navController: NavController) {
-
+fun UserAuthScreen(onNavigateToHomeScreen: (Boolean) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,16 +79,21 @@ fun UserAuthScreen(navController: NavController) {
         val visible = remember { mutableStateOf(false) }
 
         EmailTextInput(viewModel, email, visible)
-        PasswordTextInput(context, visible, viewModel, email, password, isNewUser, navController)
-        UserAuthButton(context, visible, viewModel, email, password, isNewUser, navController)
+        PasswordTextInput(context, visible, viewModel, email, password, isNewUser, onNavigateToHomeScreen)
+        UserAuthButton(context, visible, viewModel, email, password, isNewUser, onNavigateToHomeScreen)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun UserAuthScreenPreview() {
+    val navController = rememberNavController()
     Surface {
-        UserAuthScreen(rememberNavController())
+        UserAuthScreen(
+            onNavigateToHomeScreen = { navController.navigate("home/$it") {
+                popUpTo(navController.graph.id) { inclusive = true }
+            } }
+        )
     }
 }
 
@@ -89,7 +105,7 @@ fun PasswordTextInput(
     email: String,
     password: String,
     isNewUser: Boolean,
-    navController: NavController
+    onNavigateToHomeScreen: (Boolean) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -152,7 +168,7 @@ fun PasswordTextInput(
                             email = email,
                             password = password,
                             isNewUser = isNewUser,
-                            navController = navController
+                            onNavigateToHomeScreen = onNavigateToHomeScreen
                         )
                     } else {
                         Timber.e(context.getString(R.string.user_auth_error))
@@ -274,12 +290,12 @@ fun UserAuthButton(
     email: String,
     password: String,
     isNewUser: Boolean,
-    navController: NavController
+    onNavigateToHomeScreen: (Boolean) -> Unit
 ) {
 
     AnimatedVisibility(visible = state.value) {
         Button(
-            onClick = { userAuth(context, viewModel, email, password, isNewUser, navController) },
+            onClick = { userAuth(context, viewModel, email, password, isNewUser, onNavigateToHomeScreen) },
             elevation = ButtonDefaults.buttonElevation(4.dp)
         ) {
             Icon(
@@ -296,7 +312,7 @@ private fun userAuth(
     email: String,
     password: String,
     isNewUser: Boolean,
-    navController: NavController
+    onNavigateToHomeScreen: (Boolean) -> Unit
 ) {
     if (email.isEmpty() || password.isEmpty()) {
         viewModel.setUserAuthErrorMessage(context.getString(R.string.empty_credentials_error))
@@ -306,11 +322,7 @@ private fun userAuth(
             .addOnCompleteListener { auth ->
                 if (auth.isSuccessful) {
                     viewModel.setUserAuthError(false)
-                    navController.navigate("home/${auth.result.user!!.uid}/$isNewUser") {
-                        popUpTo(navController.graph.id) {
-                            inclusive = true
-                        }
-                    }
+                    onNavigateToHomeScreen(isNewUser)
                 } else {
                     viewModel.setUserAuthErrorMessage(context.getString(R.string.wrong_credentials_error))
                     viewModel.setUserAuthError(true)

@@ -26,8 +26,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +37,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
@@ -44,34 +46,39 @@ import coil.decode.ImageDecoderDecoder
 import com.jpakku.tegami.R
 
 @Composable
-fun HomeScreen(userId: String?, newUser: Boolean?) {
+fun HomeScreen(newUser: Boolean?, onNavigateToWriteLetterScreen: (String) -> Unit) {
     val context = LocalContext.current
-    val showDialog =  remember { mutableStateOf(newUser ?: true) }
-    val showRulesDialog =  remember { mutableStateOf(false) }
+    val viewModel = hiltViewModel<HomeScreenViewModel>()
+    val showDialog by viewModel.showFirstTimeUserDialog.observeAsState(newUser ?: true)
+    val showRulesDialog by viewModel.showRulesDialog.observeAsState(false)
 
-    if(showDialog.value) {
+    if(showDialog) {
         FirstTimeUserPopup(setShowDialog = {
-            showDialog.value = it
-            showRulesDialog.value = !it
+            viewModel.showFirstTimeUserDialog(it)
+            viewModel.showRulesDialog(!it)
         })
     }
 
-    if (showRulesDialog.value) {
+    if (showRulesDialog) {
         RulesPopup(showRulesDialog = {
-            showRulesDialog.value = it
+            viewModel.showRulesDialog(it)
         })
     }
 
     IconBar()
     RepeatingGraphic(context)
-    WriteALetterButton()
+    WriteALetterButton(onNavigateToWriteLetterScreen)
 }
 
 @Preview
 @Composable
 fun HomeScreenPreview() {
+    val navController = rememberNavController()
     Surface {
-        HomeScreen("", false)
+        HomeScreen(
+            false,
+            onNavigateToWriteLetterScreen = { navController.navigate("write-letter") }
+        )
     }
 }
 
@@ -128,7 +135,7 @@ fun RepeatingGraphic(context: Context) {
 }
 
 @Composable
-fun WriteALetterButton() {
+fun WriteALetterButton(onNavigateToWriteLetterScreen: (String) -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -137,7 +144,7 @@ fun WriteALetterButton() {
                 .padding(0.dp, 0.dp, 0.dp, 50.dp)
                 .align(alignment = Alignment.BottomCenter),
             onClick = {
-                //OnClick Method
+                onNavigateToWriteLetterScreen("null")
             },
             containerColor = MaterialTheme.colorScheme.primary,
             text = { Text(stringResource(R.string.write_a_letter)) },
@@ -223,7 +230,8 @@ fun RulesPopup(showRulesDialog: (Boolean) -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Column(
-                    modifier = Modifier.padding(20.dp)
+                    modifier = Modifier
+                        .padding(20.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
 

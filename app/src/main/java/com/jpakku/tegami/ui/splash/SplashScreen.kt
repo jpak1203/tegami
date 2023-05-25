@@ -14,15 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.jpakku.tegami.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController) {
-
+fun SplashScreen(onNavigateToHomeScreen: () -> Unit, onNavigateToUserAuthScreen: () -> Unit) {
     val viewModel = hiltViewModel<SplashScreenViewModel>()
     val scale = remember {
         Animatable(0f)
@@ -40,13 +38,9 @@ fun SplashScreen(navController: NavController) {
         delay(2000L)
         val user = viewModel.getUser()
         if (user != null) {
-            navController.navigate("home/${user.uid}/false") {
-                popUpTo(navController.graph.id) {
-                    inclusive = true
-                }
-            }
+            onNavigateToHomeScreen()
         } else {
-            navController.navigate("user-auth")
+            onNavigateToUserAuthScreen()
         }
     }
 
@@ -65,7 +59,11 @@ fun SplashScreen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun SplashScreenPreview() {
+    val navController = rememberNavController()
     Surface {
-        SplashScreen(rememberNavController())
+        SplashScreen(onNavigateToHomeScreen = { navController.navigate("home/false") {
+            popUpTo(navController.graph.id) { inclusive = true }
+        } },
+            onNavigateToUserAuthScreen = { navController.navigate("user-auth") })
     }
 }
