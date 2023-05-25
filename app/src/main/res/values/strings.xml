@@ -17,6 +17,25 @@
     <string name="welcome_message_1">Make new friends from all over the world</string>
     <string name="welcome_message_2">Send letters to anyone</string>
     <string name="start_message">To start, enter your email:</string>
+    <string name="menu_icon_content">Menu Icon</string>
+    <string name="mail_icon_content">Mail Icon</string>
+    <string name="writing_a_letter_gif_content">Writing A Letter Gif</string>
+    <string name="write_a_letter">Write a Letter</string>
+    <string name="write_a_letter_fab_content">Write a Letter FAB</string>
+    <string name="welcome_to_tegami">Welcome to Tegami</string>
+    <string name="first_time_user_message_1">• Express yourself through the art of letter writing.</string>
+    <string name="first_time_user_message_2">• Create serendipitous connections with random individuals across the world.</string>
+    <string name="first_time_user_message_3">• Every word carries the potential to change lives and bring people closer together.</string>
+    <string name="next">Next</string>
+    <string name="rules">Rules</string>
+    <string name="rule_1">1. Language and Content: Use appropriate language and avoid any form of harassment, hate speech, or explicit content. Maintain a positive and friendly atmosphere for everyone to enjoy.</string>
+    <string name="rule_2">2. No Personal Information: Do not share personal contact information such as phone numbers, addresses, or social media handles within the app. Protect your privacy and ensure the safety of all users.</string>
+    <string name="rule_3">3. No Solicitation: The app is meant for genuine pen pal connections and not for solicitation, advertising, or spamming. Refrain from promoting products, services, or any form of self-promotion.</string>
+    <string name="rule_4">4. Cultural Sensitivity: Be mindful of cultural differences and avoid making derogatory or offensive comments. Embrace diversity and learn from each other\'s perspectives.</string>
+    <string name="rule_5">5. Report Abuse: Report any instances of harassment, inappropriate behavior, or violations of the app\'s guidelines to the moderators or support team promptly.</string>
+    <string name="rule_6">6. Respect and Kindness: Treat all users with respect, kindness, and empathy. Engage in conversations that promote understanding and inclusivity.</string>
+    <string name="rule_7">7. Use Responsibly: Utilize the app responsibly and within the boundaries of legal and ethical conduct. The app should be used for its intended purpose of fostering meaningful connections.</string>
+    <string name="start_writing">Start Writing</string>
 
 
 </resources>
