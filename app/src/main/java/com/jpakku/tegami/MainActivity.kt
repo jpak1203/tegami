@@ -43,8 +43,8 @@ class MainActivity : ComponentActivity() {
                         composable("user-auth") {
                             UserAuthScreen(
                                 onNavigateToHomeScreen = { navController.navigate("home/$it") {
-                                    popUpTo(navController.graph.id) { inclusive = true }
-                                } }
+                                    popUpTo(navController.graph.id) { inclusive = true } }
+                                }
                             )
                         }
                         composable(
@@ -68,7 +68,12 @@ class MainActivity : ComponentActivity() {
                         ) { backStackEntry ->
                             val writeTo = backStackEntry.arguments?.getString("writeTo")
 
-                            WriteLetterScreen(writeTo)
+                            WriteLetterScreen(
+                                writeTo,
+                                onNavigateToHomeScreen = { navController.navigate("home/false") {
+                                    popUpTo(navController.graph.id) { inclusive = true } }
+                                }
+                            )
                         }
                     }
                 }
