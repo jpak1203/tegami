@@ -3,11 +3,12 @@ package com.jpakku.tegami.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(): ViewModel() {
+class HomeScreenViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth): ViewModel() {
 
     private var _showFirstTimeUserDialog = MutableLiveData<Boolean>()
     val showFirstTimeUserDialog: LiveData<Boolean>
@@ -23,6 +24,10 @@ class HomeScreenViewModel @Inject constructor(): ViewModel() {
 
     fun showRulesDialog(show: Boolean) {
         _showRulesDialog.postValue(show)
+    }
+
+    fun logOut() {
+        firebaseAuth.signOut()
     }
 
 }

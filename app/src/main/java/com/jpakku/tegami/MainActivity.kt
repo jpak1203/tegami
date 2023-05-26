@@ -57,7 +57,8 @@ class MainActivity : ComponentActivity() {
 
                             HomeScreen(
                                 newUser,
-                                onNavigateToWriteLetterScreen = { navController.navigate("write-letter/$it") }
+                                onNavigateToWriteLetterScreen = { navController.navigate("write-letter/$it") },
+                                onSignOut = { navController.navigate("splash") }
                             )
                         }
                         composable(

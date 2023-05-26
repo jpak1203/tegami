@@ -57,7 +57,7 @@ import coil.decode.ImageDecoderDecoder
 import com.jpakku.tegami.R
 
 @Composable
-fun HomeScreen(newUser: Boolean?, onNavigateToWriteLetterScreen: (String) -> Unit) {
+fun HomeScreen(newUser: Boolean?, onNavigateToWriteLetterScreen: (String) -> Unit, onSignOut: () -> Unit) {
     val context = LocalContext.current
     val viewModel = hiltViewModel<HomeScreenViewModel>()
     val showDialog by viewModel.showFirstTimeUserDialog.observeAsState(newUser ?: true)
@@ -76,7 +76,7 @@ fun HomeScreen(newUser: Boolean?, onNavigateToWriteLetterScreen: (String) -> Uni
         })
     }
 
-    IconBar()
+    IconBar(viewModel, onSignOut)
     RepeatingGraphic(context)
     WriteALetterButton(onNavigateToWriteLetterScreen)
 }
@@ -88,13 +88,14 @@ fun HomeScreenPreview() {
     Surface {
         HomeScreen(
             false,
-            onNavigateToWriteLetterScreen = { navController.navigate("write-letter") }
+            onNavigateToWriteLetterScreen = { navController.navigate("write-letter") },
+            onSignOut = { navController.navigate("splash") }
         )
     }
 }
 
 @Composable
-fun IconBar() {
+fun IconBar(viewModel: HomeScreenViewModel, onSignOut: () -> Unit) {
     val contextForToast = LocalContext.current.applicationContext
 
     Row(
@@ -106,7 +107,7 @@ fun IconBar() {
             mutableStateOf(Icons.Default.Menu)
         }
 
-        DropdownMenu(openDialog, buttonIcon)
+        DropdownMenu(openDialog, buttonIcon, viewModel, onSignOut)
 
         IconButton(
             modifier = Modifier.padding(40.dp),
@@ -322,7 +323,12 @@ fun RulesPopup(showRulesDialog: (Boolean) -> Unit) {
 }
 
 @Composable
-fun DropdownMenu(openDialog: MutableState<Boolean>, buttonIcon: MutableState<ImageVector>) {
+fun DropdownMenu(
+    openDialog: MutableState<Boolean>,
+    buttonIcon: MutableState<ImageVector>,
+    viewModel: HomeScreenViewModel,
+    onSignOut: () -> Unit
+) {
     Column {
         IconButton(
             modifier = Modifier.padding(40.dp, 40.dp, 0.dp, 0.dp),
@@ -361,7 +367,10 @@ fun DropdownMenu(openDialog: MutableState<Boolean>, buttonIcon: MutableState<Ima
                         modifier = Modifier.padding(40.dp, 0.dp),
                         shape = CircleShape,
                         containerColor = MaterialTheme.colorScheme.primary,
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            viewModel.logOut()
+                            onSignOut()
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Logout,
