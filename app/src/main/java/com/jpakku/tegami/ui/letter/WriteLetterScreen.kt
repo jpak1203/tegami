@@ -38,7 +38,7 @@ fun WriteLetterScreen(writeTo: String?, onNavigateToHomeScreen: () -> Unit) {
     SendButton(viewModel, writeTo, onNavigateToHomeScreen)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun WriteLetterScreenPreview() {
     val navController = rememberNavController()

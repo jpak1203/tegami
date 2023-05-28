@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class WriteLetterScreenViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth): ViewModel() {
+class WriteLetterScreenViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth,
+                                                     private val firebaseFirestore: FirebaseFirestore): ViewModel() {
 
     private var _messageSubject = MutableLiveData("")
     val messageSubject: LiveData<String>
@@ -28,10 +30,16 @@ class WriteLetterScreenViewModel @Inject constructor(private val firebaseAuth: F
 
     fun sendMessage(writeTo: String?) {
         val user = firebaseAuth.currentUser?.uid
-        if (writeTo.isNullOrEmpty()) {
-            //TODO: send to FCM
+
+        val message = hashMapOf(
+            "subject" to messageSubject.value,
+            "body" to messageBody.value
+        )
+
+        if (writeTo.isNullOrEmpty() or writeTo.equals("null")) {
+            firebaseFirestore.collection("messageQueue").add(message)
         } else {
-            //TODO: send to writeTo user's inbox
+            firebaseFirestore.document("users/$writeTo/inbox/$user").collection("messages").add(message)
         }
     }
 }

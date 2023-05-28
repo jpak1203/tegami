@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jpakku.tegami.ui.home.HomeScreen
 import com.jpakku.tegami.ui.letter.WriteLetterScreen
+import com.jpakku.tegami.ui.settings.SettingsScreen
 import com.jpakku.tegami.ui.splash.SplashScreen
 import com.jpakku.tegami.ui.theme.TegamiTheme
 import com.jpakku.tegami.ui.user.UserAuthScreen
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TegamiTheme(darkTheme = false) {
+            TegamiTheme(darkTheme = true) {
 
                 Surface(
                     modifier = Modifier.fillMaxSize()
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     NavHost(navController, "splash") {
+
                         composable("splash") {
                             SplashScreen(
                                 onNavigateToHomeScreen = { navController.navigate("home/false") {
@@ -40,6 +42,7 @@ class MainActivity : ComponentActivity() {
                                 onNavigateToUserAuthScreen = { navController.navigate("user-auth") }
                             )
                         }
+
                         composable("user-auth") {
                             UserAuthScreen(
                                 onNavigateToHomeScreen = { navController.navigate("home/$it") {
@@ -47,6 +50,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
+
                         composable(
                             "home/{newUser}",
                             arguments = listOf(
@@ -58,9 +62,20 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(
                                 newUser,
                                 onNavigateToWriteLetterScreen = { navController.navigate("write-letter/$it") },
-                                onSignOut = { navController.navigate("splash") }
+                                onNavigateToSettingsScreen = { navController.navigate("settings") }
                             )
                         }
+
+                        composable(
+                            "settings"
+                        ) {
+                            SettingsScreen {
+                                navController.navigate("splash") {
+                                    popUpTo(navController.graph.id) { inclusive = true }
+                                }
+                            }
+                        }
+
                         composable(
                             "write-letter/{writeTo}",
                             arguments = listOf(
@@ -75,6 +90,13 @@ class MainActivity : ComponentActivity() {
                                     popUpTo(navController.graph.id) { inclusive = true } }
                                 }
                             )
+                        }
+
+                        composable(
+                            "mailbox"
+                        ) {
+
+                            //TODO: add MailboxScreen
                         }
                     }
                 }
