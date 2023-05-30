@@ -87,15 +87,15 @@ class MainActivity : ComponentActivity() {
                             "settings"
                         ) {
                             SettingsScreen(
+                                dataStoreUtil,
+                                viewModel,
                                 onChangePassword = { navController.navigate("change-password") },
                                 onChangeTheme = { navController.navigate("themes") },
                                 onSignOut = {
                                     navController.navigate("splash") {
                                         popUpTo(navController.graph.id) { inclusive = true }
                                     }
-                                },
-                                dataStoreUtil,
-                                viewModel
+                                }
                             )
                         }
 

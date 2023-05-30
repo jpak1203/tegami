@@ -37,11 +37,11 @@ import com.jpakku.tegami.util.DataStoreUtil
 import kotlinx.coroutines.launch
 
 @Composable
-fun SettingsScreen(onChangePassword: () -> Unit,
+fun SettingsScreen(dataStoreUtil: DataStoreUtil,
+                   mainActivityViewModel: MainActivityViewModel,
+                   onChangePassword: () -> Unit,
                    onChangeTheme: () -> Unit,
-                   onSignOut: () -> Unit,
-                   dataStoreUtil: DataStoreUtil,
-                   mainActivityViewModel: MainActivityViewModel
+                   onSignOut: () -> Unit
 ) {
 
     val viewModel = hiltViewModel<SettingsScreenViewModel>()
