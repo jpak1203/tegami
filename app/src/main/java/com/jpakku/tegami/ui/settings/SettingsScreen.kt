@@ -1,5 +1,6 @@
 package com.jpakku.tegami.ui.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,49 +17,48 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
+import com.jpakku.tegami.R
+import com.jpakku.tegami.activities.MainActivityViewModel
+import com.jpakku.tegami.util.DataStoreUtil
+import kotlinx.coroutines.launch
 
 @Composable
-fun SettingsScreen(onSignOut: () -> Unit) {
+fun SettingsScreen(onChangePassword: () -> Unit,
+                   onChangeTheme: () -> Unit,
+                   onSignOut: () -> Unit,
+                   dataStoreUtil: DataStoreUtil,
+                   mainActivityViewModel: MainActivityViewModel
+) {
 
     val viewModel = hiltViewModel<SettingsScreenViewModel>()
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         Text(
             modifier = Modifier.padding(20.dp),
-            text = "Settings",
+            text = stringResource(R.string.settings_title),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
         Profile(viewModel)
-        AccountSettings()
-        AppSettings()
+        AccountSettings(onChangePassword, onChangeTheme)
+        AppSettings(dataStoreUtil, mainActivityViewModel)
         LogoutButton(viewModel, onSignOut)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SettingsScreenPreview() {
-    val navController = rememberNavController()
-    Surface {
-        SettingsScreen {
-            navController.navigate("splash") {
-                popUpTo(navController.graph.id) { inclusive = true }
-            }
-        }
     }
 }
 
@@ -79,13 +79,13 @@ fun Profile(viewModel: SettingsScreenViewModel) {
 }
 
 @Composable
-fun AccountSettings() {
+fun AccountSettings(onChangePassword: () -> Unit, onChangeTheme: () -> Unit) {
     Column {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp, 20.dp, 0.dp, 0.dp),
-            text = "User Settings",
+            text = stringResource(R.string.user_settings),
             style = MaterialTheme.typography.bodySmall,
             color = Color.Gray
         )
@@ -93,7 +93,10 @@ fun AccountSettings() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp, 0.dp, 20.dp, 0.dp),
+                .padding(0.dp, 0.dp, 20.dp, 0.dp)
+                .clickable {
+                    onChangePassword()
+                },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -103,23 +106,26 @@ fun AccountSettings() {
                 Icon(
                     modifier = Modifier.padding(20.dp, 0.dp),
                     imageVector = Icons.Filled.Password,
-                    contentDescription = "Change Password Icon"
+                    contentDescription = stringResource(R.string.change_password_icon_content)
                 )
                 Text(
-                    text = "Change Password",
+                    text = stringResource(R.string.change_password),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
             Icon(
                 imageVector = Icons.Filled.ArrowRight,
-                contentDescription = "Change Password"
+                contentDescription = stringResource(R.string.change_password)
             )
         }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp, 0.dp, 20.dp, 0.dp),
+                .padding(0.dp, 0.dp, 20.dp, 0.dp)
+                .clickable {
+                    onChangeTheme()
+                },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -129,30 +135,33 @@ fun AccountSettings() {
                 Icon(
                     modifier = Modifier.padding(20.dp, 0.dp),
                     imageVector = Icons.Filled.Brush,
-                    contentDescription = "Change Theme Icon"
+                    contentDescription = stringResource(R.string.change_theme_icon_content)
                 )
                 Text(
-                    text = "Change Theme",
+                    text = stringResource(R.string.change_theme),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
             Icon(
                 imageVector = Icons.Filled.ArrowRight,
-                contentDescription = "Change Theme"
+                contentDescription = stringResource(R.string.change_theme)
             )
         }
     }
 }
 
 @Composable
-fun AppSettings() {
+fun AppSettings(dataStoreUtil: DataStoreUtil, mainActivityViewModel: MainActivityViewModel) {
+    var switchState by remember {mainActivityViewModel.isDarkThemeEnabled }
+    val coroutineScope = rememberCoroutineScope()
+
     Column {
 
         Text(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp, 20.dp, 0.dp, 0.dp),
-            text = "App Settings",
+            text = stringResource(R.string.app_settings),
             style = MaterialTheme.typography.bodySmall,
             color = Color.Gray
         )
@@ -169,16 +178,22 @@ fun AppSettings() {
                 Icon(
                     modifier = Modifier.padding(20.dp, 0.dp),
                     imageVector = Icons.Filled.DarkMode,
-                    contentDescription = "Dark Mode Icon"
+                    contentDescription = stringResource(R.string.dark_mode_icon_content)
                 )
                 Text(
-                    text = "Dark Mode",
+                    text = stringResource(R.string.dark_mode),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
             Switch(
-                checked = false,
-                onCheckedChange = {}
+                checked = switchState,
+                onCheckedChange = {
+                    switchState = it
+
+                    coroutineScope.launch {
+                        dataStoreUtil.saveTheme(it)
+                    }
+                }
             )
         }
 
@@ -195,16 +210,18 @@ fun AppSettings() {
                 Icon(
                     modifier = Modifier.padding(20.dp, 0.dp),
                     imageVector = Icons.Filled.Notifications,
-                    contentDescription = "Notifications Icon"
+                    contentDescription = stringResource(R.string.notifications_icon_content)
                 )
                 Text(
-                    text = "Notifications",
+                    text = stringResource(R.string.notifications),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
             Switch(
                 checked = false,
-                onCheckedChange = {}
+                onCheckedChange = {
+                    // TODO: add notification
+                }
             )
         }
 
@@ -221,16 +238,16 @@ fun AppSettings() {
                 Icon(
                     modifier = Modifier.padding(20.dp, 0.dp),
                     imageVector = Icons.Filled.List,
-                    contentDescription = "Rules Icon"
+                    contentDescription = stringResource(R.string.rules_icon_content)
                 )
                 Text(
-                    text = "Rules",
+                    text = stringResource(id = R.string.rules),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
             Icon(
                 imageVector = Icons.Filled.ArrowRight,
-                contentDescription = "Rules"
+                contentDescription = stringResource(id = R.string.rules)
             )
         }
     }
@@ -239,7 +256,9 @@ fun AppSettings() {
 @Composable
 fun LogoutButton(viewModel: SettingsScreenViewModel, onSignOut: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxSize().padding(40.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(40.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.Bottom
     ) {
@@ -250,7 +269,7 @@ fun LogoutButton(viewModel: SettingsScreenViewModel, onSignOut: () -> Unit) {
             }
         ) {
             Text(
-                text = "Log out".uppercase(),
+                text = stringResource(R.string.log_out).uppercase(),
                 style = MaterialTheme.typography.bodyMedium
             )
         }

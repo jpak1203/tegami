@@ -36,6 +36,19 @@
     <string name="rule_6">6. Respect and Kindness: Treat all users with respect, kindness, and empathy. Engage in conversations that promote understanding and inclusivity.</string>
     <string name="rule_7">7. Use Responsibly: Utilize the app responsibly and within the boundaries of legal and ethical conduct. The app should be used for its intended purpose of fostering meaningful connections.</string>
     <string name="start_writing">Start Writing</string>
+    <string name="settings_title">Settings</string>
+    <string name="user_settings">User Settings</string>
+    <string name="change_password_icon_content">Change Password Icon</string>
+    <string name="change_password">Change Password</string>
+    <string name="change_theme_icon_content">Change Theme Icon</string>
+    <string name="change_theme">Change Theme</string>
+    <string name="app_settings">App Settings</string>
+    <string name="dark_mode_icon_content">Dark Mode Icon</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="notifications_icon_content">Notifications Icon</string>
+    <string name="notifications">Notifications</string>
+    <string name="rules_icon_content">Rules Icon</string>
+    <string name="log_out">Log out</string>
 
 
 </resources>

@@ -1,10 +1,13 @@
-package com.jpakku.tegami
+package com.jpakku.tegami.activities
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,15 +20,29 @@ import com.jpakku.tegami.ui.settings.SettingsScreen
 import com.jpakku.tegami.ui.splash.SplashScreen
 import com.jpakku.tegami.ui.theme.TegamiTheme
 import com.jpakku.tegami.ui.user.UserAuthScreen
+import com.jpakku.tegami.util.DataStoreUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val viewModel: MainActivityViewModel by viewModels()
+    private lateinit var dataStoreUtil: DataStoreUtil
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        dataStoreUtil = DataStoreUtil(applicationContext)
+
+        val systemTheme = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> { true }
+            Configuration.UI_MODE_NIGHT_NO -> { false }
+            else -> { false }
+        }
+
         setContent {
-            TegamiTheme(darkTheme = true) {
+            val theme = dataStoreUtil.getTheme(systemTheme).collectAsState(initial = systemTheme)
+
+            TegamiTheme(darkTheme = theme.value) {
 
                 Surface(
                     modifier = Modifier.fillMaxSize()
@@ -69,11 +86,25 @@ class MainActivity : ComponentActivity() {
                         composable(
                             "settings"
                         ) {
-                            SettingsScreen {
-                                navController.navigate("splash") {
-                                    popUpTo(navController.graph.id) { inclusive = true }
-                                }
-                            }
+                            SettingsScreen(
+                                onChangePassword = { navController.navigate("change-password") },
+                                onChangeTheme = { navController.navigate("themes") },
+                                onSignOut = {
+                                    navController.navigate("splash") {
+                                        popUpTo(navController.graph.id) { inclusive = true }
+                                    }
+                                },
+                                dataStoreUtil,
+                                viewModel
+                            )
+                        }
+
+                        composable("change-password") {
+
+                        }
+
+                        composable("themes") {
+
                         }
 
                         composable(
