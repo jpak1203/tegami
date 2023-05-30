@@ -41,6 +41,7 @@ fun SettingsScreen(dataStoreUtil: DataStoreUtil,
                    mainActivityViewModel: MainActivityViewModel,
                    onChangePassword: () -> Unit,
                    onChangeTheme: () -> Unit,
+                   onNavigateToRulesScreen: () -> Unit,
                    onSignOut: () -> Unit
 ) {
 
@@ -57,7 +58,7 @@ fun SettingsScreen(dataStoreUtil: DataStoreUtil,
         )
         Profile(viewModel)
         AccountSettings(onChangePassword, onChangeTheme)
-        AppSettings(dataStoreUtil, mainActivityViewModel)
+        AppSettings(dataStoreUtil, mainActivityViewModel, onNavigateToRulesScreen)
         LogoutButton(viewModel, onSignOut)
     }
 }
@@ -151,7 +152,9 @@ fun AccountSettings(onChangePassword: () -> Unit, onChangeTheme: () -> Unit) {
 }
 
 @Composable
-fun AppSettings(dataStoreUtil: DataStoreUtil, mainActivityViewModel: MainActivityViewModel) {
+fun AppSettings(dataStoreUtil: DataStoreUtil,
+                mainActivityViewModel: MainActivityViewModel,
+                onNavigateToRulesScreen: () -> Unit) {
     var switchState by remember {mainActivityViewModel.isDarkThemeEnabled }
     val coroutineScope = rememberCoroutineScope()
 
@@ -228,7 +231,10 @@ fun AppSettings(dataStoreUtil: DataStoreUtil, mainActivityViewModel: MainActivit
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp, 0.dp, 20.dp, 0.dp),
+                .padding(0.dp, 0.dp, 20.dp, 0.dp)
+                .clickable{
+                    onNavigateToRulesScreen()
+                },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {

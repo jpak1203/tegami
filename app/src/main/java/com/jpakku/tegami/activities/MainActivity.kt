@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jpakku.tegami.ui.home.HomeScreen
 import com.jpakku.tegami.ui.letter.WriteLetterScreen
+import com.jpakku.tegami.ui.rules.RulesScreen
 import com.jpakku.tegami.ui.settings.SettingsScreen
 import com.jpakku.tegami.ui.splash.SplashScreen
 import com.jpakku.tegami.ui.theme.TegamiTheme
@@ -91,6 +92,7 @@ class MainActivity : ComponentActivity() {
                                 viewModel,
                                 onChangePassword = { navController.navigate("change-password") },
                                 onChangeTheme = { navController.navigate("themes") },
+                                onNavigateToRulesScreen = { navController.navigate("rules") },
                                 onSignOut = {
                                     navController.navigate("splash") {
                                         popUpTo(navController.graph.id) { inclusive = true }
@@ -105,6 +107,10 @@ class MainActivity : ComponentActivity() {
 
                         composable("themes") {
 
+                        }
+
+                        composable("rules") {
+                            RulesScreen()
                         }
 
                         composable(

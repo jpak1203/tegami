@@ -266,44 +266,44 @@ fun RulesPopup(showRulesDialog: (Boolean) -> Unit) {
                     Column {
                         Text(
                             modifier = Modifier.padding(0.dp, 10.dp),
-                            text = stringResource(R.string.rule_1),
+                            text = "${stringResource(R.string.rule_1_title)}: ${stringResource(R.string.rule_1_body)}",
                             style = MaterialTheme.typography.bodySmall
                         )
 
                         Text(
                             modifier = Modifier.padding(0.dp, 10.dp),
-                            text = stringResource(R.string.rule_2),
+                            text = "${stringResource(R.string.rule_2_title)}: ${stringResource(R.string.rule_2_body)}",
                             style = MaterialTheme.typography.bodySmall
                         )
 
                         Text(
                             modifier = Modifier.padding(0.dp, 10.dp),
-                            text = stringResource(R.string.rule_3),
+                            text = "${stringResource(R.string.rule_3_title)}: ${stringResource(R.string.rule_3_body)}",
                             style = MaterialTheme.typography.bodySmall
                         )
 
                         Text(
                             modifier = Modifier.padding(0.dp, 10.dp),
-                            text = stringResource(R.string.rule_4),
+                            text = "${stringResource(R.string.rule_4_title)}: ${stringResource(R.string.rule_4_body)}",
                             style = MaterialTheme.typography.bodySmall
                         )
 
                         Text(
                             modifier = Modifier.padding(0.dp, 10.dp),
-                            text = stringResource(R.string.rule_5),
+                            text = "${stringResource(R.string.rule_5_title)}: ${stringResource(R.string.rule_5_body)}",
                             style = MaterialTheme.typography.bodySmall
                         )
 
 
                         Text(
                             modifier = Modifier.padding(0.dp, 10.dp),
-                            text = stringResource(R.string.rule_6),
+                            text = "${stringResource(R.string.rule_6_title)}: ${stringResource(R.string.rule_6_body)}",
                             style = MaterialTheme.typography.bodySmall
                         )
 
                         Text(
                             modifier = Modifier.padding(0.dp, 10.dp),
-                            text = stringResource(R.string.rule_7),
+                            text = "${stringResource(R.string.rule_7_title)}: ${stringResource(R.string.rule_7_body)}",
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
