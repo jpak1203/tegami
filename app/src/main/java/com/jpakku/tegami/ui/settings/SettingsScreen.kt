@@ -192,7 +192,6 @@ fun AppSettings(dataStoreUtil: DataStoreUtil,
                 checked = switchState,
                 onCheckedChange = {
                     switchState = it
-
                     coroutineScope.launch {
                         dataStoreUtil.saveTheme(it)
                     }

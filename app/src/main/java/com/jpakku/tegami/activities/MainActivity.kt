@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val theme = dataStoreUtil.getTheme(systemTheme).collectAsState(initial = systemTheme)
+            viewModel.setTheme(theme.value)
 
             TegamiTheme(darkTheme = theme.value) {
 
