@@ -9,6 +9,7 @@ import javax.inject.Inject
 class FireBaseSource @Inject constructor(private val firebaseAuth: FirebaseAuth,
                                          private val database: FirebaseDatabase) {
 
+    //TODO: treat this like an API. replace all calls in viewModel to these functions
     fun signUpUser(email:String, password:String) =
         firebaseAuth.createUserWithEmailAndPassword(email, password)
 
@@ -19,5 +20,10 @@ class FireBaseSource @Inject constructor(private val firebaseAuth: FirebaseAuth,
         database.getReference("users").child(firebaseAuth.uid!!).setValue(UserModel(email = email, username = username))
 
     fun saveMessage(message: MessageModel) =
-        database.getReference("messages").setValue(MessageModel(username = message.username, subject = message.subject, body = message.body))
+        database.getReference("messages").setValue(MessageModel(
+            subject = message.subject,
+            body = message.body,
+            read = message.read,
+            timestamp = System.currentTimeMillis()
+        ))
 }

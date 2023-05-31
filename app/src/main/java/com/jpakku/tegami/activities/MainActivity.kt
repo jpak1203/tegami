@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jpakku.tegami.ui.home.HomeScreen
+import com.jpakku.tegami.ui.inbox.InboxScreen
 import com.jpakku.tegami.ui.letter.WriteLetterScreen
 import com.jpakku.tegami.ui.rules.RulesScreen
 import com.jpakku.tegami.ui.settings.SettingsScreen
@@ -81,6 +82,7 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(
                                 newUser,
                                 onNavigateToWriteLetterScreen = { navController.navigate("write-letter/$it") },
+                                onNavigateToInboxScreen = { navController.navigate("inbox") },
                                 onNavigateToSettingsScreen = { navController.navigate("settings") }
                             )
                         }
@@ -131,10 +133,12 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            "mailbox"
+                            "inbox"
                         ) {
 
-                            //TODO: add MailboxScreen
+                            InboxScreen(
+                                onNavigateToWriteLetterScreen = { navController.navigate("write-letter/$it") },
+                            )
                         }
                     }
                 }

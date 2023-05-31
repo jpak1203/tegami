@@ -2,7 +2,6 @@ package com.jpakku.tegami.ui.home
 
 import android.content.Context
 import android.os.Build
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,6 +52,7 @@ import com.jpakku.tegami.R
 fun HomeScreen(
     newUser: Boolean?,
     onNavigateToWriteLetterScreen: (String?) -> Unit,
+    onNavigateToInboxScreen: () -> Unit,
     onNavigateToSettingsScreen: () -> Unit
 ) {
     val context = LocalContext.current
@@ -73,7 +73,7 @@ fun HomeScreen(
         })
     }
 
-    IconBar(viewModel, onNavigateToSettingsScreen)
+    IconBar(onNavigateToSettingsScreen, onNavigateToInboxScreen)
     RepeatingGraphic(context)
     WriteALetterButton(onNavigateToWriteLetterScreen)
 }
@@ -86,13 +86,14 @@ fun HomeScreenPreview() {
         HomeScreen(
             false,
             onNavigateToWriteLetterScreen = { navController.navigate("write-letter") },
+            onNavigateToInboxScreen = { navController.navigate("inbox") },
             onNavigateToSettingsScreen = { navController.navigate("settings") }
         )
     }
 }
 
 @Composable
-fun IconBar(viewModel: HomeScreenViewModel, onNavigateToSettingsScreen: () -> Unit) {
+fun IconBar(onNavigateToSettingsScreen: () -> Unit, onNavigateToInboxScreen: () -> Unit) {
     val contextForToast = LocalContext.current.applicationContext
 
     Row(
@@ -119,7 +120,7 @@ fun IconBar(viewModel: HomeScreenViewModel, onNavigateToSettingsScreen: () -> Un
         IconButton(
             modifier = Modifier.padding(40.dp),
             onClick = {
-                Toast.makeText(contextForToast, "Click!", Toast.LENGTH_SHORT).show()
+                onNavigateToInboxScreen()
             }
         ) {
             Icon(
