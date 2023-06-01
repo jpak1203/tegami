@@ -14,13 +14,13 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class InboxViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth,
-                                         private val firebaseFirestore: FirebaseFirestore): ViewModel() {
+class InboxScreenViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth,
+                                               private val firebaseFirestore: FirebaseFirestore): ViewModel() {
 
     private val _messages = MutableLiveData<MutableMap<String, List<QueryDocumentSnapshot>>>()
     val messages: LiveData<MutableMap<String, List<QueryDocumentSnapshot>>>
         get() = _messages
-    
+
     private fun getInbox(): CollectionReference {
         val userId = firebaseAuth.currentUser?.uid ?: ""
 

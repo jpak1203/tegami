@@ -31,7 +31,7 @@ import com.jpakku.tegami.R
 
 @Composable
 fun InboxScreen(onNavigateToReadLetterScreen: (String) -> Unit) {
-    val viewModel = hiltViewModel<InboxViewModel>()
+    val viewModel = hiltViewModel<InboxScreenViewModel>()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -47,7 +47,7 @@ fun InboxScreen(onNavigateToReadLetterScreen: (String) -> Unit) {
 }
 
 @Composable
-fun LetterList(viewModel: InboxViewModel, onNavigateToReadLetterScreen: (String) -> Unit) {
+fun LetterList(viewModel: InboxScreenViewModel, onNavigateToReadLetterScreen: (String) -> Unit) {
     val messages by viewModel.messages.observeAsState(mutableMapOf())
 
     if (messages.isEmpty()) {
