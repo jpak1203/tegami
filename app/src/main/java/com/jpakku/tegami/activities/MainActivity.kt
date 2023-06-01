@@ -137,8 +137,18 @@ class MainActivity : ComponentActivity() {
                         ) {
 
                             InboxScreen(
-                                onNavigateToWriteLetterScreen = { navController.navigate("write-letter/$it") },
+                                onNavigateToReadLetterScreen = { navController.navigate("read-letter") },
                             )
+                        }
+
+                        composable(
+                            "read-letter",
+                            arguments = listOf(
+                                navArgument("from") { type = NavType.StringType}
+                            )
+                        ) {backStackEntry ->
+                            val from = backStackEntry.arguments?.getString("from")
+
                         }
                     }
                 }

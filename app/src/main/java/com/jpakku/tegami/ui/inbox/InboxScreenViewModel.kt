@@ -3,6 +3,7 @@ package com.jpakku.tegami.ui.inbox
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -19,7 +20,7 @@ class InboxViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth,
     private val _messages = MutableLiveData<MutableMap<String, List<QueryDocumentSnapshot>>>()
     val messages: LiveData<MutableMap<String, List<QueryDocumentSnapshot>>>
         get() = _messages
-
+    
     private fun getInbox(): CollectionReference {
         val userId = firebaseAuth.currentUser?.uid ?: ""
 
@@ -29,24 +30,34 @@ class InboxViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth,
             .collection("inbox")
     }
 
-    fun getMessages() {
-        getInbox().get().addOnSuccessListener {
-            val messageMap =  if (_messages.value.isNullOrEmpty()) mutableMapOf() else _messages.value
+    private fun getLetters(writeTo: List<String>){
+        val tasks = writeTo.map {
+            getInbox().document(it).collection("messages").get()
+        }
 
-            for (writeTo in it) {
-                getInbox().document(writeTo.id).collection("messages")
-                    .get().addOnSuccessListener {messages ->
-                        val sortedMessages = messages.sortedBy { message ->
-                            message["timestamp"] as Timestamp
-                        }
-                        messageMap?.set(writeTo.id, sortedMessages)
-                        _messages.postValue(messageMap)
-                    }.addOnFailureListener { exception ->
-                        Timber.e("Error getting messages: ", exception)
-                    }
+        Tasks.whenAllComplete(tasks).addOnCompleteListener {
+            val messageMap =  if (messages.value.isNullOrEmpty()) mutableMapOf() else _messages.value
+
+            for (i in tasks.indices) {
+                val sortedMessages = tasks[i].result.sortedBy { message ->
+                    message["timestamp"] as Timestamp
+                }
+                messageMap?.set(writeTo[i], sortedMessages)
+                _messages.postValue(messageMap)
             }
         }.addOnFailureListener { exception ->
-            Timber.e("Error getting inbox: ", exception)
+            Timber.e("Error getting letters: ", exception)
+        }
+    }
+
+    fun getMessages() {
+        getInbox().get().addOnCompleteListener {
+            val ids = it.result.map { snapshot ->
+                snapshot.id
+            }
+            getLetters(ids)
+        }.addOnFailureListener { exception ->
+            Timber.e("Error getting messages: ", exception)
         }
     }
 }
